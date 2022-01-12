@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Countdown for Dr Dre visits</title>
+    <meta name="description" content="Countdown for Dr Dre visits to Record A Studios">
+    <link href="http://fonts.cdnfonts.com/css/pricedown" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/2.3.0/luxon.min.js"></script>
+    <style>
+        body{
+            background: black url("https://i.imgur.com/0fx0m83.jpeg") no-repeat top center fixed;
+            background-size: cover;
+        }
+        .text{
+            font-family: 'Pricedown Bl', sans-serif;
+            color: white;
+            text-align: center;
+            -webkit-text-stroke: 5px black;
+            font-size: 60px;
+            margin-top: 500px;
+        }
+        #locale{
+            color: red;
+        }
+        #countdown{
+            color: yellow;
+            font-size: 80px;
+        }
+    </style>
+</head>
+<body>
+<div class="text">
+    <div class="header">Next Dr Dre visit to Record A Studios<br>in your local time:</div>
+    <div id="locale"></div>
+    <div id="countdown"></div>
+</div>
+<script type="application/javascript">
+    let DateTime = luxon.DateTime;
+    let Interval = luxon.Interval;
+
+    let seed = DateTime.utc(2022, 1, 11, 2, 0, 0);
+    let target;
+
+    function timeToTarget() {
+        // 1-Mon 2-Tue 3-Wed 4-Thu 5-Fri 6-Sat 7-Sun
+        let invalid_days = [2,4,5,7];
+        while ( seed < DateTime.now().setZone('UTC') || invalid_days.includes(seed.weekday) ) {
+            seed = seed.plus({hours: 4});
+        }
+        target = seed;
+    }
+
+    function msReadableDuration() {
+        timeToTarget();
+        let diff = Interval.fromDateTimes(DateTime.now().setZone('UTC'), target)
+            .toDuration(['days','hours', 'minutes', 'seconds']).toObject();
+
+        let seconds = Math.floor(diff.seconds),
+            minutes = diff.minutes,
+            hours = diff.hours,
+            days = diff.days;
+
+        hours = (hours < 10) ? "0" + hours : hours;
+        minutes = (minutes < 10) ? "0" + minutes : minutes;
+        seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+        return days+' days, '+hours+':'+minutes+':'+seconds;
+    }
+
+    document.querySelector('#countdown').innerHTML = msReadableDuration();
+    setInterval(function() {
+        document.querySelector('#countdown').innerHTML = msReadableDuration();
+
+        document.querySelector('#locale').innerHTML = target.setZone(DateTime.local().zoneName)
+            .toLocaleString({...DateTime.DATETIME_SHORT, weekday: 'long' });
+    }, 1000);
+
+    document.querySelector('#locale').innerHTML = target.setZone(DateTime.local().zoneName)
+        .toLocaleString({...DateTime.DATETIME_SHORT, weekday: 'long' });
+</script>
+</body>
+</html>
