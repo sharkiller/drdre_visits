@@ -46,6 +46,7 @@
         let invalid_days = (seed.weekNumber % 2 === 0)?[2,4,6]:[1,3,5,7];
         while ( seed < DateTime.now().setZone('UTC') || invalid_days.includes(seed.weekday) ) {
             seed = seed.plus({hours: 4});
+            invalid_days = (seed.weekNumber % 2 === 0)?[2,4,6]:[1,3,5,7];
         }
         target = seed;
     }
