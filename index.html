@@ -43,7 +43,7 @@
 
     function timeToTarget() {
         // 1-Mon 2-Tue 3-Wed 4-Thu 5-Fri 6-Sat 7-Sun
-        while ( seed < DateTime.now().setZone('UTC') || seed.ordinal % 2 === 1 ) {
+        while ( seed < DateTime.now().setZone('UTC') ) { // || seed.ordinal % 2 === 1 ) {
             seed = seed.plus({hours: 4});
         }
         target = seed;
@@ -63,7 +63,7 @@
         minutes = (minutes < 10) ? "0" + minutes : minutes;
         seconds = (seconds < 10) ? "0" + seconds : seconds;
 
-        return days+' days, '+hours+':'+minutes+':'+seconds;
+        return (days > 0 ? days+' day, ':'')+hours+':'+minutes+':'+seconds;
     }
 
     document.querySelector('#countdown').innerHTML = msReadableDuration();
